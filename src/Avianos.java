@@ -1,118 +1,68 @@
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Avianos {
-	 /// Левая координата отрисовки
-    private int _startPosX;
-    /// Правая кооридната отрисовки
-    private int _startPosY;
-    /// Ширина отрисовки
-    final int carWidth = 100;
-    /// Ширина отрисовки
-    final int carHeight = 60;
-    // число самолетов
-    int planeCount = 0;
-    
-    /// Максимальная скорость
-    public int MaxSpeed; 
-    /// Вес автомобиля
-    public int Weight;
-    /// Основной цвет палубы
-    public Color MainColor; 
-    /// Дополнительный цвет разметки 
+public class Avianos extends Shep {
+	/// Дополнительный цвет разметки 
     public Color DopColor; 
-    /// Признак наличия переднего лифтов
+    // Признак наличия переднего лифтов
     public boolean FirstLift;
-    /// Признак наличия заднего лифтов
+    // Признак наличия заднего лифтов
     public boolean SecondLift;
-    // Признак наличя рубки
+    //признак наличия рубки
     public boolean Rubka; 
-    Plain plane;
-    public Avianos(int maxSpeed, int weight, Color mainColor, Color dopColor, boolean firstLift, boolean secondLift, boolean rubka, CountPlain count)
-    {
-        MaxSpeed = maxSpeed;
-        Weight = weight;
-        MainColor = mainColor;
+    // Дополнительный цвет
+    public Color DopColor_1;
+    // Признак наличия ор
+    public boolean Orudie;
+    // признак разметки
+    public boolean Razmetka;
+    IPlain[] plains = null;
+ 
+    public Avianos(int maxSpeed, int weight, 
+    		Color mainColor, Color dopColor,boolean firstLift,
+    		boolean secondLift, boolean rubka, Color dopColor_1, 
+    		boolean orudie, boolean razmetka, CountPlain countPlain,
+    		PlaneType type)
+    { 
+    	super(maxSpeed, weight, mainColor);
         DopColor = dopColor;
         FirstLift = firstLift;
         SecondLift = secondLift;
-        Rubka=rubka;
-        //planeCount = planes;
-        plane= new Plain(count);
-        
+        Rubka = rubka;
+        DopColor_1 = dopColor_1;
+        Orudie = orudie;
+        Razmetka = razmetka;
+        plains = new IPlain[countPlain.count()];
+        for (int i=0; i<plains.length; i++)
+        	plains[i] = type.create();
     }
-    public void SetPosition(int x, int y)
+    public void DrawCar(Graphics g,  int width, int height)
     {
-        _startPosX = x;
-        _startPosY = y;
-    }
-
-    public void MoveTransport(Direction direction, int _pictureWidth, int _pictureHeight)
-    {
-        float step = 10; //MaxSpeed * 100 / Weight;
-        switch (direction)
-        {
-            // вправо
-            case Right:
-                if (_startPosX + step < _pictureWidth - carWidth)
-                {
-                    _startPosX += step;
-                }
-                break;
-            //влево
-            case Left:
-                if (_startPosX - step > 0)
-                {
-                    _startPosX -= step;
-                }
-                break;
-            //вверх
-            case Up:
-                if (_startPosY - step > 20)
-                {
-                    _startPosY -= step;
-                }
-                break;
-            //вниз
-            case Down:
-                if (_startPosY + step < _pictureHeight - carHeight)
-                {
-                    _startPosY += step;
-                }
-                break;
-        }
-        System.out.println("x="+_startPosX+" y="+_startPosY);
-    }
-    
-    public void drawBomber(Graphics g, int width, int height) {
-	  g.setColor(MainColor);
-	  g.fillRect(_startPosX, _startPosY, 60, 30);
-	  // нос
-	  g.setColor(MainColor);
-	  g.drawLine( _startPosX + 60, _startPosY + 5, _startPosX + 75, _startPosY + 15);
-	  g.drawLine( _startPosX + 75, _startPosY + 15, _startPosX + 60, _startPosY + 25);
-	  //корма
-	  g.setColor(MainColor);
-	  g.drawLine( _startPosX, _startPosY + 5, _startPosX-10, _startPosY + 10);
-	  g.drawLine( _startPosX - 10, _startPosY + 10, _startPosX - 10, _startPosY + 20);
-	  g.drawLine( _startPosX - 10, _startPosY + 20, _startPosX, _startPosY + 25);
-	  // рисуем 1ый лифт
-	  if (FirstLift)
-	  {
-	       g.setColor(DopColor);
-	       g.fillRect( _startPosX + 10, _startPosY+10, 10, 10);
-	  }
-	  // рисуем 2ой лифт
-	  if (SecondLift)
-	  {
-	     g.setColor(DopColor);
-	     g.fillRect( _startPosX + 40, _startPosY + 10, 10, 10);
-	  }
-	  if (Rubka)
-	  {
-	      g.setColor(DopColor);
-	      g.fillRect( _startPosX + 30, _startPosY + 25, 5, 5);
-	  }
-	  plane.DrawPlain(g, _startPosX, _startPosY);
+	 super.DrawCar(g, width, height);
+         g.setColor(DopColor);
+         if (FirstLift)
+         {
+             g.fillRect( _startPosX + 10, _startPosY + 10, 10, 10);
+         }
+         if (SecondLift)
+         {
+             g.fillRect( _startPosX + 40, _startPosY + 10, 10, 10);
+         }
+         if (Rubka)
+         {
+             g.fillRect( _startPosX + 30, _startPosY + 25, 5, 5);
+         }
+         g.setColor(DopColor_1);
+         if (Orudie)
+         {
+            g.fillRect( _startPosX + 62, _startPosY + 12, 3, 3);
+         }
+         if (Razmetka)
+         {
+             g.drawLine( _startPosX + 20, _startPosY + 15, _startPosX + 40, _startPosY + 15);
+         }
+         if (plains != null)
+        	 for (int i=0; i<plains.length; i++)
+        		 plains[i].DrawPlain(g, DopColor_1, (_startPosX + (i*10)), _startPosY);
     }
 }
